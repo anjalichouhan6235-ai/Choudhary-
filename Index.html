@@ -1,324 +1,661 @@
-<html lang="en" class="dark"><head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Prompt Creator</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                fontFamily: {
-                    sans: ['Inter', 'sans-serif'],
-                },
-                extend: {
-                    colors: {
-                        background: '#09090b',
-                        surface: '#18181b',
-                        border: '#27272a',
-                    }
-                }
-            }
-        }
-    </script>
+    <title>AURA STEPS | Walk with Confidence</title>
     <style>
-        /* Custom scrollbar for subtle look */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+        :root {
+            --bg-color: #050505;
+            --card-bg: #111111;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --accent: #00f3ff; /* Neon Cyan */
+            --accent-gold: #d4af37;
+            --neon-green: #39ff14;
+            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        ::-webkit-scrollbar-track {
-            background: transparent;
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        ::-webkit-scrollbar-thumb {
-            background: #3f3f46;
-            border-radius: 3px;
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: var(--font-main);
+            overflow-x: hidden;
+            line-height: 1.6;
         }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #52525b;
+
+        /* Utility Classes */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .flex { display: flex; align-items: center; }
+        .grid { display: grid; gap: 20px; }
+        .hidden { display: none !important; }
+        .btn {
+            padding: 12px 28px;
+            border: none;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-block;
+            text-decoration: none;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
         }
+        .btn-primary { background: var(--accent); color: #000; }
+        .btn-primary:hover { background: #fff; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0, 243, 255, 0.3); }
+        .btn-outline { border: 1px solid var(--text-primary); color: #fff; background: transparent; }
+        .btn-outline:hover { background: #fff; color: #000; }
+
+        /* Navbar */
+        nav {
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            background: rgba(5, 5, 5, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            border-bottom: 1px solid #222;
+        }
+        .nav-container { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.8rem; font-weight: 900; letter-spacing: -1px; cursor: pointer; }
+        .logo span { color: var(--accent); }
+        .nav-links { display: flex; gap: 25px; list-style: none; }
+        .nav-links li { cursor: pointer; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; color: var(--text-secondary); transition: var(--transition); }
+        .nav-links li:hover { color: var(--accent); }
+        .nav-icons { display: flex; gap: 20px; font-size: 1.2rem; }
+        .icon-btn { cursor: pointer; position: relative; }
+        .badge { position: absolute; top: -8px; right: -10px; background: var(--accent); color: #000; font-size: 0.6rem; padding: 2px 5px; border-radius: 50%; font-weight: bold; }
+
+        /* Hero Section */
+        .hero {
+            height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: radial-gradient(circle at center, #111 0%, #050505 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-content h1 { font-size: clamp(3rem, 10vw, 6rem); font-weight: 900; line-height: 0.9; margin-bottom: 20px; text-transform: uppercase; }
+        .hero-content p { color: var(--text-secondary); margin-bottom: 30px; font-size: 1.2rem; }
+        .hero-shoe-large {
+            position: absolute;
+            font-size: 20rem;
+            opacity: 0.1;
+            z-index: 0;
+            transform: rotate(-25deg);
+            right: -5%;
+            top: 10%;
+            user-select: none;
+        }
+
+        /* Section Styling */
+        section { padding: 80px 0; }
+        .section-title { font-size: 2.5rem; margin-bottom: 40px; text-transform: uppercase; border-left: 5px solid var(--accent); padding-left: 20px; }
+
+        /* Product Cards */
+        .product-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+        .product-card {
+            background: var(--card-bg);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+            transition: var(--transition);
+            border: 1px solid #222;
+        }
+        .product-card:hover { border-color: var(--accent); transform: translateY(-5px); }
+        .product-img {
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8rem;
+            background: linear-gradient(45deg, #111, #1a1a1a);
+            position: relative;
+        }
+        .tag { position: absolute; top: 15px; left: 15px; padding: 4px 10px; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; background: var(--accent); color: #000; }
+        .product-info { padding: 20px; }
+        .product-info h3 { font-size: 1.1rem; margin-bottom: 5px; }
+        .product-info p { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 15px; }
+        .price { font-weight: 800; font-size: 1.2rem; color: var(--accent); }
+        .card-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; }
+        .wish-btn { background: none; border: none; color: #fff; font-size: 1.2rem; cursor: pointer; }
+
+        /* Filter Sidebar */
+        .shop-layout { display: grid; grid-template-columns: 250px 1fr; gap: 40px; }
+        .filters h4 { margin-bottom: 15px; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px; }
+        .filter-group { margin-bottom: 30px; }
+        .filter-option { display: block; margin-bottom: 8px; color: var(--text-secondary); font-size: 0.9rem; cursor: pointer; }
+        .filter-option input { margin-right: 10px; accent-color: var(--accent); }
+
+        /* Cart & Checkout */
+        .cart-table { width: 100%; border-collapse: collapse; }
+        .cart-table th { text-align: left; padding: 15px; border-bottom: 1px solid #333; color: var(--text-secondary); font-size: 0.8rem; text-transform: uppercase; }
+        .cart-table td { padding: 20px 15px; border-bottom: 1px solid #222; }
+        .cart-total { background: var(--card-bg); padding: 30px; border-radius: 4px; margin-top: 40px; text-align: right; }
+        .cart-total h2 { font-size: 2rem; margin-bottom: 20px; }
+
+        /* Footer */
+        footer { background: #000; padding: 80px 0 40px 0; border-top: 1px solid #222; }
+        .footer-grid { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; margin-bottom: 60px; }
+        .footer-col h4 { margin-bottom: 25px; text-transform: uppercase; letter-spacing: 2px; }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 12px; color: var(--text-secondary); font-size: 0.9rem; cursor: pointer; transition: 0.2s; }
+        .footer-col ul li:hover { color: var(--accent); }
+        .newsletter input { background: #111; border: 1px solid #333; padding: 12px; color: #fff; width: 100%; margin-bottom: 10px; }
+        .copyright { text-align: center; border-top: 1px solid #222; padding-top: 40px; color: var(--text-secondary); font-size: 0.8rem; }
+
+        /* Popups */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); z-index: 2000; display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: 0.3s;
+        }
+        .modal.active { opacity: 1; pointer-events: all; }
+        .modal-content { background: var(--card-bg); padding: 40px; max-width: 500px; width: 90%; position: relative; border: 1px solid var(--accent); }
+        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .shop-layout { grid-template-columns: 1fr; }
+            .hero-content h1 { font-size: 3.5rem; }
+            .filters { display: none; }
+        }
+
+        /* Animations */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .page-content { animation: fadeIn 0.5s ease forwards; }
+
+        /* Toast */
+        #toast {
+            position: fixed; bottom: 20px; right: 20px; background: var(--accent); color: #000;
+            padding: 15px 25px; font-weight: bold; border-radius: 4px; transform: translateY(100px);
+            transition: 0.3s; z-index: 3000;
+        }
+        #toast.show { transform: translateY(0); }
+
+        /* Dark Mode Toggle */
+        .theme-switch { position: fixed; bottom: 20px; left: 20px; z-index: 1000; background: #222; padding: 10px; border-radius: 50px; cursor: pointer; }
+
+        /* Floating buttons */
+        .whatsapp-float { position: fixed; bottom: 80px; right: 20px; background: #25d366; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; cursor: pointer; z-index: 1000; }
         
-        /* Custom Checkbox/Toggle styling as requested */
-        .custom-checkbox:checked {
-            background-color: #fff;
-            border-color: #fff;
-            background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='black' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
-        }
-        
-        .glass-panel {
-            background: rgba(24, 24, 27, 0.6);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+        /* Cookie Banner */
+        #cookie-banner {
+            position: fixed; bottom: 0; width: 100%; background: #111; color: #fff; padding: 20px;
+            display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--accent); z-index: 4000;
         }
     </style>
 </head>
-<body class="bg-background text-zinc-400 font-sans antialiased h-screen w-full flex overflow-hidden selection:bg-zinc-800 selection:text-white">
+<body>
 
-    <!-- Sidebar -->
-    <aside class="w-64 border-r border-border hidden md:flex flex-col bg-background/50">
-        <div class="p-6">
-            <div class="flex items-center gap-2 mb-8">
-                <div class="w-6 h-6 bg-white rounded-md flex items-center justify-center">
-                    <div class="w-2 h-2 bg-black rounded-full"></div>
+    <!-- Navbar -->
+    <nav>
+        <div class="container nav-container">
+            <div class="logo" onclick="navigateTo('home')">AURA<span>STEPS</span></div>
+            <ul class="nav-links">
+                <li onclick="navigateTo('shop')">Shop</li>
+                <li onclick="navigateTo('men')">Men</li>
+                <li onclick="navigateTo('women')">Women</li>
+                <li onclick="navigateTo('arrivals')">New</li>
+                <li onclick="navigateTo('about')">About</li>
+            </ul>
+            <div class="nav-icons">
+                <div class="icon-btn" onclick="navigateTo('login')">👤</div>
+                <div class="icon-btn" onclick="navigateTo('wishlist')">❤️</div>
+                <div class="icon-btn" onclick="navigateTo('cart')">
+                    🛒 <span class="badge" id="cart-count">0</span>
                 </div>
-                <span class="text-white font-medium tracking-tight text-sm">PROMPTGEN</span>
-            </div>
-
-            <nav class="space-y-1">
-                <a href="#" class="flex items-center gap-3 px-3 py-2 text-sm text-zinc-100 bg-surface/50 rounded-lg border border-border/50">
-                    <iconify-icon icon="solar:magic-stick-3-linear" width="18" class="text-zinc-100"></iconify-icon>
-                    Create
-                </a>
-                <a href="#" class="flex items-center gap-3 px-3 py-2 text-sm hover:text-zinc-200 hover:bg-white/5 rounded-lg transition-colors">
-                    <iconify-icon icon="solar:gallery-wide-linear" width="18"></iconify-icon>
-                    History
-                </a>
-                <a href="#" class="flex items-center gap-3 px-3 py-2 text-sm hover:text-zinc-200 hover:bg-white/5 rounded-lg transition-colors">
-                    <iconify-icon icon="solar:bookmark-linear" width="18"></iconify-icon>
-                    Favorites
-                </a>
-                <a href="#" class="flex items-center gap-3 px-3 py-2 text-sm hover:text-zinc-200 hover:bg-white/5 rounded-lg transition-colors">
-                    <iconify-icon icon="solar:library-linear" width="18"></iconify-icon>
-                    Templates
-                </a>
-            </nav>
-        </div>
-
-        <div class="mt-auto p-6 border-t border-border">
-            <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-zinc-700 to-zinc-600 border border-white/10"></div>
-                <div class="flex flex-col">
-                    <span class="text-xs font-medium text-zinc-200">Creative User</span>
-                    <span class="text-[10px] text-zinc-500">Pro Plan</span>
-                </div>
-                <iconify-icon icon="solar:settings-linear" width="18" class="ml-auto hover:text-white cursor-pointer"></iconify-icon>
+                <div class="icon-btn" onclick="navigateTo('tracking')">📦</div>
             </div>
         </div>
-    </aside>
+    </nav>
 
-    <!-- Main Content -->
-    <main class="flex-1 flex flex-col relative h-full overflow-hidden">
-        
-        <!-- Header -->
-        <header class="h-16 border-b border-border flex items-center justify-between px-6 md:px-10 bg-background/80 backdrop-blur-md z-10">
-            <div class="flex items-center gap-4">
-                <button class="md:hidden text-zinc-400">
-                    <iconify-icon icon="solar:hamburger-menu-linear" width="24"></iconify-icon>
-                </button>
-                <h1 class="text-sm font-medium text-zinc-200 tracking-tight">New Generation</h1>
-            </div>
-            <div class="flex items-center gap-3">
-                <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full border border-border bg-surface">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                    <span class="text-xs text-zinc-400">System Ready</span>
+    <div id="app-content">
+        <!-- Home View (Default) -->
+        <div id="view-home" class="view page-content">
+            <header class="hero">
+                <div class="hero-shoe-large">👟</div>
+                <div class="hero-content">
+                    <p>ULTIMATE STREETWEAR 2025</p>
+                    <h1>WALK WITH<br>CONFIDENCE</h1>
+                    <button class="btn btn-primary" onclick="navigateTo('shop')">Shop Collection</button>
+                    <button class="btn btn-outline" style="margin-left: 10px;" onclick="navigateTo('arrivals')">New Arrivals</button>
                 </div>
-                <button class="text-zinc-400 hover:text-white transition-colors">
-                    <iconify-icon icon="solar:bell-linear" width="20"></iconify-icon>
-                </button>
-            </div>
-        </header>
+            </header>
 
-        <!-- Scrollable Area -->
-        <div class="flex-1 overflow-y-auto p-4 md:p-10 pb-32">
-            <div class="max-w-4xl mx-auto space-y-12">
+            <section class="container">
+                <h2 class="section-title">Featured Drops</h2>
+                <div class="grid product-grid" id="featured-products">
+                    <!-- JS Injected -->
+                </div>
+            </section>
 
-                <!-- Input Section -->
-                <section class="space-y-4">
-                    <div class="flex justify-between items-end">
-                        <label class="text-sm font-medium text-zinc-300">Prompt Idea</label>
-                        <span class="text-xs text-zinc-500">Describe the subject, mood, or concept</span>
+            <section style="background: var(--accent); color: #000; padding: 60px 0; text-align: center;">
+                <div class="container">
+                    <h2 style="font-size: 3rem; font-weight: 900; margin-bottom: 10px;">LIMITED FLASH SALE</h2>
+                    <p style="font-weight: bold; font-size: 1.2rem;">USE CODE: <b>AURA20</b> FOR 20% OFF ALL SNEAKERS</p>
+                    <br>
+                    <button class="btn" style="background: #000; color: #fff;" onclick="navigateTo('shop')">Claim Offer</button>
+                </div>
+            </section>
+
+            <section class="container">
+                <h2 class="section-title">Verified Reviews</h2>
+                <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+                    <div style="background: #111; padding: 30px; border-left: 3px solid var(--accent);">
+                        <div style="color: var(--accent); margin-bottom: 10px;">★★★★★</div>
+                        <p>"Best quality streetwear sneakers I've ever owned. The comfort is next level!"</p>
+                        <p style="margin-top: 15px; font-weight: bold;">- Alex R.</p>
                     </div>
-                    
-                    <div class="relative group">
-                        <div class="absolute -inset-0.5 bg-gradient-to-r from-zinc-700 to-zinc-800 rounded-xl opacity-20 group-focus-within:opacity-100 transition duration-500 blur"></div>
-                        <div class="relative bg-black rounded-xl border border-border ring-1 ring-white/5 p-1">
-                            <textarea class="w-full bg-transparent text-sm text-zinc-200 placeholder-zinc-600 p-4 min-h-[120px] focus:outline-none resize-none" placeholder="E.g., A futuristic samurai in a neon-lit rainstorm, cinematic lighting...">Neon-noir detective office, rainy cyberpunk city outside window, high contrast, melancholy mood.</textarea>
-                            
-                            <!-- Toolbar inside input -->
-                            <div class="flex items-center justify-between px-4 py-2 border-t border-border/50">
-                                <div class="flex items-center gap-2">
-                                    <button class="p-1.5 hover:bg-white/10 rounded-md transition-colors text-zinc-500 hover:text-zinc-300" title="Upload Image">
-                                        <iconify-icon icon="solar:gallery-add-linear" width="18"></iconify-icon>
-                                    </button>
-                                    <button class="p-1.5 hover:bg-white/10 rounded-md transition-colors text-zinc-500 hover:text-zinc-300" title="Enhance">
-                                        <iconify-icon icon="solar:magic-stick-3-linear" width="18"></iconify-icon>
-                                    </button>
-                                </div>
-                                <div class="flex items-center gap-3">
-                                    <span class="text-xs text-zinc-600">0/1000</span>
-                                </div>
-                            </div>
-                        </div>
+                    <div style="background: #111; padding: 30px; border-left: 3px solid var(--accent);">
+                        <div style="color: var(--accent); margin-bottom: 10px;">★★★★★</div>
+                        <p>"Super fast delivery and the packaging was premium. Def buying again."</p>
+                        <p style="margin-top: 15px; font-weight: bold;">- Marcus J.</p>
                     </div>
+                </div>
+            </section>
 
-                    <!-- Filters / Settings -->
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div class="space-y-2">
-                            <label class="text-xs text-zinc-500 ml-1">Aspect Ratio</label>
-                            <div class="relative">
-                                <select class="w-full appearance-none bg-surface border border-border text-zinc-300 text-xs rounded-lg px-3 py-2.5 focus:outline-none focus:border-zinc-600">
-                                    <option>16:9 (Cinematic)</option>
-                                    <option>1:1 (Square)</option>
-                                    <option>9:16 (Portrait)</option>
-                                    <option>21:9 (Ultrawide)</option>
-                                </select>
-                                <iconify-icon icon="solar:alt-arrow-down-linear" class="absolute right-3 top-2.5 text-zinc-500 pointer-events-none" width="14"></iconify-icon>
-                            </div>
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-xs text-zinc-500 ml-1">Style Preset</label>
-                            <div class="relative">
-                                <select class="w-full appearance-none bg-surface border border-border text-zinc-300 text-xs rounded-lg px-3 py-2.5 focus:outline-none focus:border-zinc-600">
-                                    <option>Photorealistic</option>
-                                    <option>Digital Art</option>
-                                    <option>Analog Film</option>
-                                    <option>3D Render</option>
-                                </select>
-                                <iconify-icon icon="solar:alt-arrow-down-linear" class="absolute right-3 top-2.5 text-zinc-500 pointer-events-none" width="14"></iconify-icon>
-                            </div>
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-xs text-zinc-500 ml-1">Model</label>
-                            <div class="relative">
-                                <select class="w-full appearance-none bg-surface border border-border text-zinc-300 text-xs rounded-lg px-3 py-2.5 focus:outline-none focus:border-zinc-600">
-                                    <option>Midjourney v6</option>
-                                    <option>DALL-E 3</option>
-                                    <option>Stable Diffusion XL</option>
-                                </select>
-                                <iconify-icon icon="solar:alt-arrow-down-linear" class="absolute right-3 top-2.5 text-zinc-500 pointer-events-none" width="14"></iconify-icon>
-                            </div>
-                        </div>
-                        <div class="space-y-2">
-                             <label class="text-xs text-zinc-500 ml-1">Chaos</label>
-                             <div class="flex items-center h-[38px] px-2">
-                                <input type="range" class="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer [&amp;::-webkit-slider-thumb]:appearance-none [&amp;::-webkit-slider-thumb]:w-3 [&amp;::-webkit-slider-thumb]:h-3 [&amp;::-webkit-slider-thumb]:bg-white [&amp;::-webkit-slider-thumb]:rounded-full" min="0" max="100">
-                             </div>
+            <section class="container">
+                <h2 class="section-title">#AURASTEPS INSTA</h2>
+                <div class="grid" style="grid-template-columns: repeat(4, 1fr); gap: 10px;">
+                    <div style="aspect-ratio: 1; background: #111; display:flex; align-items:center; justify-content:center; font-size: 3rem;">📸</div>
+                    <div style="aspect-ratio: 1; background: #111; display:flex; align-items:center; justify-content:center; font-size: 3rem;">👟</div>
+                    <div style="aspect-ratio: 1; background: #111; display:flex; align-items:center; justify-content:center; font-size: 3rem;">🔥</div>
+                    <div style="aspect-ratio: 1; background: #111; display:flex; align-items:center; justify-content:center; font-size: 3rem;">🏙️</div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Shop View -->
+        <div id="view-shop" class="view hidden page-content container" style="padding-top: 40px;">
+            <div class="shop-layout">
+                <aside class="filters">
+                    <div class="filter-group">
+                        <h4>Category</h4>
+                        <label class="filter-option"><input type="checkbox" checked> Lifestyle</label>
+                        <label class="filter-option"><input type="checkbox"> Running</label>
+                        <label class="filter-option"><input type="checkbox"> Basketball</label>
+                    </div>
+                    <div class="filter-group">
+                        <h4>Size (UK)</h4>
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px;">
+                            <button style="background: #111; border: 1px solid #333; color: #fff; padding: 5px;">7</button>
+                            <button style="background: #111; border: 1px solid #333; color: #fff; padding: 5px;">8</button>
+                            <button style="background: #111; border: 1px solid #333; color: #fff; padding: 5px;">9</button>
+                            <button style="background: #111; border: 1px solid #333; color: #fff; padding: 5px;">10</button>
                         </div>
                     </div>
-
-                    <div class="pt-2">
-                        <button class="w-full py-2.5 bg-white text-black text-sm font-medium rounded-lg hover:bg-zinc-200 transition-colors shadow-[0_0_15px_rgba(255,255,255,0.1)] flex items-center justify-center gap-2">
-                            <iconify-icon icon="solar:stars-minimalistic-linear" width="18"></iconify-icon>
-                            Generate Prompts
-                        </button>
+                    <div class="filter-group">
+                        <h4>Price Range</h4>
+                        <input type="range" style="width: 100%; accent-color: var(--accent);">
                     </div>
-                </section>
-
-                <!-- Results Section -->
-                <section>
-                    <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-sm font-medium text-zinc-200 tracking-tight">Generated Variations</h2>
-                        <div class="flex gap-2">
-                            <button class="p-1.5 text-zinc-500 hover:text-white transition-colors"><iconify-icon icon="solar:menu-dots-linear" width="18"></iconify-icon></button>
-                            <button class="p-1.5 text-zinc-500 hover:text-white transition-colors"><iconify-icon icon="solar:list-linear" width="18"></iconify-icon></button>
-                        </div>
+                </aside>
+                <main>
+                    <div class="flex" style="justify-content: space-between; margin-bottom: 30px;">
+                        <h2 id="shop-title">All Products</h2>
+                        <select style="background: #111; color: #fff; padding: 5px 10px; border: 1px solid #333;">
+                            <option>Sort by: Newest</option>
+                            <option>Price: Low to High</option>
+                            <option>Price: High to Low</option>
+                        </select>
                     </div>
-
-                    <div class="grid gap-4">
-                        <!-- Result Card 1 -->
-                        <div class="glass-panel border border-border rounded-xl p-5 relative group transition-all hover:border-zinc-600">
-                            <div class="flex justify-between items-start mb-3">
-                                <div class="flex items-center gap-2">
-                                    <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">V1</span>
-                                    <span class="text-xs text-zinc-500">Cinematic Noir</span>
-                                </div>
-                                <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <button class="p-1.5 hover:bg-white/10 rounded text-zinc-400 hover:text-white" title="Copy">
-                                        <iconify-icon icon="solar:copy-linear" width="16"></iconify-icon>
-                                    </button>
-                                    <button class="p-1.5 hover:bg-white/10 rounded text-zinc-400 hover:text-white" title="Save">
-                                        <iconify-icon icon="solar:bookmark-linear" width="16"></iconify-icon>
-                                    </button>
-                                </div>
-                            </div>
-                            <p class="text-sm text-zinc-300 leading-relaxed font-light">
-                                <span class="text-indigo-300">Subject:</span> A weary detective sitting in a cluttered, dimly lit office, staring at a holographic evidence board.
-                                <br>
-                                <span class="text-indigo-300">Environment:</span> Through the venetian blinds, a sprawling cyberpunk metropolis drenched in neon rain, towering megastructures visible in the hazy distance.
-                                <br>
-                                <span class="text-indigo-300">Lighting:</span> High contrast chiaroscuro, slivers of blue neon light cutting through the blinds, warm amber glow from a desk lamp illuminating smoke swirls.
-                                <br>
-                                <span class="text-indigo-300">Style:</span> Cinematic masterpiece, Ridley Scott aesthetic, 35mm film grain, anamorphic lens flares.
-                                <br>
-                                <span class="text-indigo-300">Parameters:</span> --ar 16:9 --v 6.0 --stylize 250
-                            </p>
-                        </div>
-
-                        <!-- Result Card 2 -->
-                        <div class="glass-panel border border-border rounded-xl p-5 relative group transition-all hover:border-zinc-600">
-                            <div class="flex justify-between items-start mb-3">
-                                <div class="flex items-center gap-2">
-                                    <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">V2</span>
-                                    <span class="text-xs text-zinc-500">Illustrative / Graphic</span>
-                                </div>
-                                <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <button class="p-1.5 hover:bg-white/10 rounded text-zinc-400 hover:text-white" title="Copy">
-                                        <iconify-icon icon="solar:copy-linear" width="16"></iconify-icon>
-                                    </button>
-                                    <button class="p-1.5 hover:bg-white/10 rounded text-zinc-400 hover:text-white" title="Save">
-                                        <iconify-icon icon="solar:bookmark-linear" width="16"></iconify-icon>
-                                    </button>
-                                </div>
-                            </div>
-                            <p class="text-sm text-zinc-300 leading-relaxed font-light">
-                                <span class="text-emerald-300">Subject:</span> Silhouette of a solitary figure in a trench coat at a desk.
-                                <br>
-                                <span class="text-emerald-300">Environment:</span> Abstracted cityscape outside, rain depicted as sharp geometric lines, neon signs blurring into bokeh circles.
-                                <br>
-                                <span class="text-emerald-300">Mood:</span> Melancholy, isolation, technological coldness versus human warmth.
-                                <br>
-                                <span class="text-emerald-300">Art Style:</span> Vector illustration style, flat colors with subtle gradients, inspired by Moebius and retro-futurism posters.
-                                <br>
-                                <span class="text-emerald-300">Parameters:</span> --ar 16:9 --v 6.0 --niji 6
-                            </p>
-                        </div>
-                         <!-- Result Card 3 -->
-                         <div class="glass-panel border border-border rounded-xl p-5 relative group transition-all hover:border-zinc-600">
-                            <div class="flex justify-between items-start mb-3">
-                                <div class="flex items-center gap-2">
-                                    <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-rose-500/10 text-rose-400 border border-rose-500/20">V3</span>
-                                    <span class="text-xs text-zinc-500">Hyper-Realistic Macro</span>
-                                </div>
-                                <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <button class="p-1.5 hover:bg-white/10 rounded text-zinc-400 hover:text-white" title="Copy">
-                                        <iconify-icon icon="solar:copy-linear" width="16"></iconify-icon>
-                                    </button>
-                                    <button class="p-1.5 hover:bg-white/10 rounded text-zinc-400 hover:text-white" title="Save">
-                                        <iconify-icon icon="solar:bookmark-linear" width="16"></iconify-icon>
-                                    </button>
-                                </div>
-                            </div>
-                            <p class="text-sm text-zinc-300 leading-relaxed font-light">
-                                <span class="text-rose-300">Subject:</span> Close-up of a glass of whiskey on the detective's desk, ice melting, reflecting a neon 'OPEN' sign from outside.
-                                <br>
-                                <span class="text-rose-300">Details:</span> Condensation droplets on the glass, texture of the scratched wooden desk, a revolver blurred in the background.
-                                <br>
-                                <span class="text-rose-300">Camera:</span> Macro shot, 100mm lens, f/2.8, shallow depth of field, focus on the bubbles in the liquid.
-                                <br>
-                                <span class="text-rose-300">Render:</span> Unreal Engine 5 render, raytracing, 8k resolution, ultra-detailed textures.
-                                <br>
-                                <span class="text-rose-300">Parameters:</span> --ar 16:9 --v 6.0 --quality 2
-                            </p>
-                        </div>
+                    <div class="grid product-grid" id="shop-products-list">
+                        <!-- JS Injected -->
                     </div>
-                </section>
+                </main>
             </div>
         </div>
-        
-        <!-- Bottom Status Bar -->
-        <footer class="absolute bottom-0 w-full h-8 bg-background/90 backdrop-blur border-t border-border flex items-center justify-between px-4 text-[10px] text-zinc-500 z-20">
-            <div class="flex gap-4">
-                <span>Server: US-East-1</span>
-                <span>Latency: 24ms</span>
-            </div>
-            <div>
-                <span>v2.4.0</span>
-            </div>
-        </footer>
 
-    </main>
+        <!-- Cart View -->
+        <div id="view-cart" class="view hidden page-content container" style="padding-top: 40px;">
+            <h2 class="section-title">Your Bag</h2>
+            <div id="cart-empty" class="hidden" style="text-align: center; padding: 50px;">
+                <div style="font-size: 5rem;">🛒</div>
+                <h3>Your bag is empty</h3>
+                <br>
+                <button class="btn btn-primary" onclick="navigateTo('shop')">Go Shopping</button>
+            </div>
+            <div id="cart-items-wrapper">
+                <table class="cart-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="cart-table-body">
+                        <!-- JS Injected -->
+                    </tbody>
+                </table>
+                <div class="cart-total">
+                    <div style="margin-bottom: 10px;">
+                        <input type="text" id="coupon-input" placeholder="Coupon Code" style="background:#000; border:1px solid #333; color:#fff; padding:10px;">
+                        <button class="btn btn-primary" style="padding: 10px 20px;" onclick="applyCoupon()">Apply</button>
+                    </div>
+                    <p style="color: var(--text-secondary);">Subtotal: <span id="cart-subtotal">\$0.00</span></p>
+                    <p style="color: var(--accent);">Discount: <span id="cart-discount">-\$0.00</span></p>
+                    <h2 id="cart-grand-total">Total: \$0.00</h2>
+                    <button class="btn btn-primary" style="width: 300px; padding: 20px;" onclick="navigateTo('checkout')">Secure Checkout</button>
+                </div>
+            </div>
+        </div>
 
-</body></html>
+        <!-- Checkout View -->
+        <div id="view-checkout" class="view hidden page-content container" style="padding-top: 40px;">
+            <h2 class="section-title">Checkout</h2>
+            <div class="grid" style="grid-template-columns: 1fr 400px; gap: 40px;">
+                <div style="background: #111; padding: 30px;">
+                    <h3>Shipping Details</h3>
+                    <br>
+                    <div class="grid" style="grid-template-columns: 1fr 1fr;">
+                        <input type="text" placeholder="First Name" style="padding: 12px; background: #000; border: 1px solid #333; color: #fff;">
+                        <input type="text" placeholder="Last Name" style="padding: 12px; background: #000; border: 1px solid #333; color: #fff;">
+                    </div>
+                    <br>
+                    <input type="text" placeholder="Address" style="padding: 12px; background: #000; border: 1px solid #333; color: #fff; width: 100%;">
+                    <br><br>
+                    <h3>Payment Method</h3>
+                    <br>
+                    <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div style="border: 1px solid var(--accent); padding: 15px; cursor: pointer; text-align: center; background: rgba(0, 243, 255, 0.1);">💳 Card / UPI</div>
+                        <div style="border: 1px solid #333; padding: 15px; cursor: pointer; text-align: center;">🏦 Net Banking</div>
+                        <div style="border: 1px solid #333; padding: 15px; cursor: pointer; text-align: center;">📦 Pay on Delivery</div>
+                        <div style="border: 1px solid #333; padding: 15px; cursor: pointer; text-align: center;">📱 PayPal / Stripe</div>
+                    </div>
+                    <br>
+                    <button class="btn btn-primary" style="width: 100%;" onclick="processOrder()">Complete Purchase</button>
+                </div>
+                <div style="background: #000; border: 1px solid #333; padding: 20px;">
+                    <h3>Order Summary</h3>
+                    <hr style="margin: 20px 0; border: 0; border-top: 1px solid #222;">
+                    <div id="checkout-summary-items"></div>
+                    <hr style="margin: 20px 0; border: 0; border-top: 1px solid #222;">
+                    <h3 id="checkout-final-total">Total: \$0.00</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Static Content Pages (About, Policies, etc.) -->
+        <div id="view-about" class="view hidden page-content container" style="padding: 60px 20px;">
+            <h2 class="section-title">The Aura Story</h2>
+            <p style="font-size: 1.2rem; max-width: 800px;">Founded in 2025, AURA STEPS was born from the streets of the future. We believe that footwear isn't just a utility—it's an identity. Our designs merge high-performance materials with high-fashion aesthetics for the generation that never stops moving.</p>
+        </div>
+
+        <div id="view-tracking" class="view hidden page-content container" style="padding: 60px 20px; text-align: center;">
+            <h2 class="section-title">Track Your Heat</h2>
+            <div style="max-width: 500px; margin: 0 auto; background: #111; padding: 40px;">
+                <input type="text" placeholder="Enter Order ID (e.g. AS-9921)" style="width: 100%; padding: 15px; background: #000; border: 1px solid #333; color: #fff; margin-bottom: 20px;">
+                <button class="btn btn-primary" style="width: 100%;">Track Order</button>
+            </div>
+        </div>
+
+        <div id="view-login" class="view hidden page-content container" style="padding: 60px 20px; display: flex; justify-content: center;">
+            <div style="width: 400px; background: #111; padding: 40px;">
+                <h2 style="margin-bottom: 20px;">Join the Crew</h2>
+                <input type="email" placeholder="Email" style="width: 100%; padding: 12px; background: #000; border: 1px solid #333; color: #fff; margin-bottom: 15px;">
+                <input type="password" placeholder="Password" style="width: 100%; padding: 12px; background: #000; border: 1px solid #333; color: #fff; margin-bottom: 20px;">
+                <button class="btn btn-primary" style="width: 100%;">Login</button>
+                <p style="margin-top: 20px; font-size: 0.8rem; color: var(--text-secondary); text-align: center;">Don't have an account? <span style="color: var(--accent); cursor: pointer;">Sign Up</span></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="grid footer-grid">
+                <div class="footer-col">
+                    <div class="logo">AURA<span>STEPS</span></div>
+                    <p style="color: var(--text-secondary); margin-top: 15px;">Premium sneakers for the bold generation. Walk with confidence, step with style.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Shop</h4>
+                    <ul>
+                        <li onclick="navigateTo('men')">Men's Collection</li>
+                        <li onclick="navigateTo('women')">Women's Collection</li>
+                        <li onclick="navigateTo('arrivals')">New Arrivals</li>
+                        <li onclick="navigateTo('shop')">Best Sellers</li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Support</h4>
+                    <ul>
+                        <li onclick="navigateTo('tracking')">Order Tracking</li>
+                        <li>Returns & Refunds</li>
+                        <li>Shipping Info</li>
+                        <li>Contact Us</li>
+                    </ul>
+                </div>
+                <div class="footer-col newsletter">
+                    <h4>Stay Updated</h4>
+                    <input type="email" placeholder="Email Address">
+                    <button class="btn btn-primary" style="width: 100%;">Subscribe</button>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2026 AURA STEPS. All Rights Reserved. | <span onclick="navigateTo('about')">Privacy Policy</span> | <span onclick="navigateTo('about')">Terms of Service</span></p>
+                <div style="margin-top: 15px; font-size: 1.5rem; letter-spacing: 15px;">
+                    🐦 📸 📘 🎵
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Extras -->
+    <div id="toast">Added to cart!</div>
+    <div class="whatsapp-float">💬</div>
+    <div class="theme-switch">🌓</div>
+    <div id="cookie-banner">
+        <span>We use cookies to enhance your experience.</span>
+        <button class="btn btn-primary" style="padding: 5px 15px;" onclick="document.getElementById('cookie-banner').style.display='none'">Accept</button>
+    </div>
+
+    <script>
+        // Mock Data
+        const products = [
+            { id: 1, name: "AURA VELOCITY X", price: 189.00, category: "men", img: "👟", tag: "Hot", rating: 4.8 },
+            { id: 2, name: "NEON DRIFT 01", price: 159.00, category: "men", img: "👟", tag: "New", rating: 4.9 },
+            { id: 3, name: "GHOST RUNNER", price: 210.00, category: "men", img: "🥾", tag: "Limited", rating: 4.7 },
+            { id: 4, name: "LUNA PEAK W", price: 145.00, category: "women", img: "👟", tag: "Sale", rating: 4.5 },
+            { id: 5, name: "URBAN PULSE", price: 175.00, category: "women", img: "👟", tag: "Best Seller", rating: 5.0 },
+            { id: 6, name: "CYBER STEP", price: 299.00, category: "men", img: "👟", tag: "Exclusive", rating: 4.9 },
+            { id: 7, name: "ZENITH AIR", price: 130.00, category: "women", img: "👟", tag: "New", rating: 4.6 },
+            { id: 8, name: "STORM BLAZE", price: 195.00, category: "men", img: "🥾", tag: "New", rating: 4.8 }
+        ];
+
+        let cart = [];
+        let wishlist = [];
+        let discount = 0;
+
+        // Navigation Engine
+        function navigateTo(viewId) {
+            document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+            const target = document.getElementById('view-' + viewId);
+            if (target) {
+                target.classList.remove('hidden');
+                window.scrollTo(0,0);
+            }
+            if(viewId === 'shop') renderProducts(products, 'shop-products-list');
+            if(viewId === 'men') renderProducts(products.filter(p => p.category === 'men'), 'shop-products-list', "Men's Collection");
+            if(viewId === 'women') renderProducts(products.filter(p => p.category === 'women'), 'shop-products-list', "Women's Collection");
+            if(viewId === 'arrivals') renderProducts(products.filter(p => p.tag === 'New'), 'shop-products-list', "New Arrivals");
+            if(viewId === 'cart') renderCart();
+            if(viewId === 'checkout') renderCheckout();
+        }
+
+        // Render Functions
+        function renderProducts(items, targetId, title = "All Products") {
+            const container = document.getElementById(targetId);
+            const titleEl = document.getElementById('shop-title');
+            if(titleEl) titleEl.innerText = title;
+            
+            container.innerHTML = items.map(p => `
+                <div class="product-card">
+                    <div class="tag">${p.tag}</div>
+                    <div class="product-img">${p.img}</div>
+                    <div class="product-info">
+                        <div style="font-size: 0.7rem; color: var(--accent); margin-bottom: 5px;">${'★'.repeat(Math.round(p.rating))}</div>
+                        <h3>${p.name}</h3>
+                        <p>${p.category.toUpperCase()} Lifestyle</p>
+                        <div class="price">\$${p.price.toFixed(2)}</div>
+                        <div class="card-actions">
+                            <button class="btn btn-primary" onclick="addToCart(${p.id})">Add To Bag</button>
+                            <button class="wish-btn" onclick="toggleWish(${p.id})">♡</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function addToCart(id) {
+            const product = products.find(p => p.id === id);
+            const exists = cart.find(item => item.id === id);
+            if(exists) {
+                exists.qty++;
+            } else {
+                cart.push({...product, qty: 1});
+            }
+            updateCartCount();
+            showToast(`${product.name} added to bag!`);
+        }
+
+        function updateCartCount() {
+            const count = cart.reduce((acc, item) => acc + item.qty, 0);
+            document.getElementById('cart-count').innerText = count;
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.innerText = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3000);
+        }
+
+        function renderCart() {
+            const body = document.getElementById('cart-table-body');
+            const empty = document.getElementById('cart-empty');
+            const wrapper = document.getElementById('cart-items-wrapper');
+
+            if(cart.length === 0) {
+                empty.classList.remove('hidden');
+                wrapper.classList.add('hidden');
+                return;
+            }
+
+            empty.classList.add('hidden');
+            wrapper.classList.remove('hidden');
+
+            body.innerHTML = cart.map(item => `
+                <tr>
+                    <td>
+                        <div class="flex" style="gap: 15px;">
+                            <span style="font-size: 2rem; background: #222; padding: 10px;">${item.img}</span>
+                            <div>
+                                <strong>${item.name}</strong><br>
+                                <small style="color: #666;">Size: 9 UK</small>
+                            </div>
+                        </div>
+                    </td>
+                    <td>\$${item.price.toFixed(2)}</td>
+                    <td>
+                        <div class="flex" style="gap: 10px;">
+                            <button onclick="changeQty(${item.id}, -1)" style="background:#222; color:#fff; border:none; width:25px; cursor:pointer;">-</button>
+                            <span>${item.qty}</span>
+                            <button onclick="changeQty(${item.id}, 1)" style="background:#222; color:#fff; border:none; width:25px; cursor:pointer;">+</button>
+                        </div>
+                    </td>
+                    <td>\$${(item.price * item.qty).toFixed(2)}</td>
+                    <td><button onclick="removeFromCart(${item.id})" style="background:none; border:none; color:red; cursor:pointer;">✕</button></td>
+                </tr>
+            `).join('');
+
+            calculateTotals();
+        }
+
+        function changeQty(id, delta) {
+            const item = cart.find(i => i.id === id);
+            if(item) {
+                item.qty += delta;
+                if(item.qty <= 0) removeFromCart(id);
+                else renderCart();
+                updateCartCount();
+            }
+        }
+
+        function removeFromCart(id) {
+            cart = cart.filter(i => i.id !== id);
+            renderCart();
+            updateCartCount();
+        }
+
+        function calculateTotals() {
+            const subtotal = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
+            const discValue = subtotal * discount;
+            const total = subtotal - discValue;
+
+            document.getElementById('cart-subtotal').innerText = `\$${subtotal.toFixed(2)}`;
+            document.getElementById('cart-discount').innerText = `-\$${discValue.toFixed(2)}`;
+            document.getElementById('cart-grand-total').innerText = `Total: \$${total.toFixed(2)}`;
+        }
+
+        function applyCoupon() {
+            const code = document.getElementById('coupon-input').value.toUpperCase();
+            if(code === 'AURA20') {
+                discount = 0.20;
+                showToast("Coupon Applied: 20% Off!");
+            } else {
+                discount = 0;
+                showToast("Invalid Coupon");
+            }
+            calculateTotals();
+        }
+
+        function renderCheckout() {
+            const summary = document.getElementById('checkout-summary-items');
+            summary.innerHTML = cart.map(item => `
+                <div class="flex" style="justify-content: space-between; margin-bottom: 10px; font-size: 0.9rem;">
+                    <span>${item.name} x${item.qty}</span>
+                    <span>\$${(item.price * item.qty).toFixed(2)}</span>
+                </div>
+            `).join('');
+            
+            const subtotal = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
+            const total = subtotal - (subtotal * discount);
+            document.getElementById('checkout-final-total').innerText = `Total: \$${total.toFixed(2)}`;
+        }
+
+        function processOrder() {
+            if(cart.length === 0) return showToast("Your bag is empty");
+            
+            // Simulated Invoice Generation
+            const orderId = "AS-" + Math.floor(100000 + Math.random() * 900000);
+            alert(`Order Placed Successfully!\nOrder ID: ${orderId}\nInvoice sent to your email.`);
+            cart = [];
+            updateCartCount();
+            navigateTo('home');
+        }
+
+        function toggleWish(id) {
+            showToast("Added to wishlist ❤️");
+        }
+
+        // Initialize
+        window.onload = () => {
+            renderProducts(products.slice(0, 4), 'featured-products');
+        };
+    </script>
+</body>
+</html>
